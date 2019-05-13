@@ -1,0 +1,120 @@
+{
+  "EDITOR_STATE": {
+    "allProjectFiles": {
+      "20bd75dc-6326-48f3-bbad-b63157af9a10": {
+        "id": "20bd75dc-6326-48f3-bbad-b63157af9a10",
+        "parent": null,
+        "name": "websiteSMS",
+        "type": "DIRECTORY",
+        "isDirectory": true,
+        "children": [
+          "16f556e3-07f4-40cc-983f-ea0f07d87bb9"
+        ],
+        "isRemovable": false,
+        "filePath": "websiteSMS"
+      },
+      "16f556e3-07f4-40cc-983f-ea0f07d87bb9": {
+        "id": "16f556e3-07f4-40cc-983f-ea0f07d87bb9",
+        "parent": "20bd75dc-6326-48f3-bbad-b63157af9a10",
+        "name": "lambda.js",
+        "type": "LAMBDA_FILE",
+        "isDirectory": false,
+        "children": [],
+        "isRemovable": true,
+        "filePath": "websiteSMS/lambda.js",
+        "code": "let AWS = require('aws-sdk');\nconst sns = new AWS.SNS();\n\nexports.handler = function (event, context, callback) {\n\n    let receiver = event['receiver'];\n    let sender = event['sender'];\n    let message = event['message'];\n\n    console.log(\"Sending message\", message, \"to receiver\", receiver);\n    \n    sns.publish({\n        Message: message,\n        MessageAttributes: {\n            'AWS.SNS.SMS.SMSType': {\n                DataType: 'String',\n                StringValue: 'Transactional'\n            },\n            'AWS.SNS.SMS.SenderID': {\n                DataType: 'String',\n                StringValue: sender\n            },\n        },\n        PhoneNumber: receiver\n    }).promise()\n        .then(data => {\n            // your code goes here\n        })\n        .catch(err => {\n            // error handling goes here\n        });\n\n\n    callback(null, { \"message\": \"Successfully executed\" });\n}",
+        "triggers": [
+          {
+            "resourceName": "apigusEast1webSMSsendWebSMSpost",
+            "config": {}
+          }
+        ],
+        "config": {
+          "runtime": "nodejs8.10",
+          "handler": "handler",
+          "timeout": 60,
+          "memory": 128,
+          "layers": []
+        }
+      }
+    },
+    "deletedFiles": [],
+    "rootNode": "20bd75dc-6326-48f3-bbad-b63157af9a10",
+    "openFiles": [
+      "16f556e3-07f4-40cc-983f-ea0f07d87bb9"
+    ],
+    "currentFileId": "16f556e3-07f4-40cc-983f-ea0f07d87bb9",
+    "resources": {
+      "apigusEast1webSMSsendWebSMSpost": {
+        "name": "apigusEast1webSMSsendWebSMSpost",
+        "type": "API_GATEWAY",
+        "config": {
+          "selectedRegion": "us-east-1",
+          "apiMode": 0,
+          "apiName": "webSMS",
+          "endpointType": "EDGE",
+          "resourceMode": 0,
+          "resourceName": "sendWebSMS",
+          "resourcePath": "/sendWebSMS",
+          "restMethod": "POST",
+          "proxyIntegration": false,
+          "enableCORS": true,
+          "stageMode": 0,
+          "stageName": "prod"
+        },
+        "globallyEditable": false
+      },
+      "snsDirectSMSResource": {
+        "name": "snsDirectSMSResource",
+        "type": "SNS",
+        "config": {
+          "snsType": 1,
+          "numbers": [
+            "@{receiver}"
+          ]
+        },
+        "globallyEditable": false
+      }
+    },
+    "customTemplate": {
+      "dialect": null,
+      "definitions": {}
+    },
+    "envVariables": [
+      {
+        "lambdaId": "all",
+        "varKey": "SIGMA_AWS_ACC_ID",
+        "varValue": null,
+        "shouldPersist": false,
+        "displayOnly": false,
+        "editable": false
+      }
+    ],
+    "packageJSON": {
+      "dependencies": {
+        "aws-sdk": {
+          "name": "aws-sdk",
+          "version": "2.176.0",
+          "dev": true,
+          "notRemovable": false
+        }
+      }
+    }
+  },
+  "PROJECT_META": {
+    "projectName": "websiteSMS",
+    "projectDescription": "Send sms from a URL",
+    "projectVersion": "1.0.0",
+    "projectRegion": "us-east-1",
+    "platform": "AWS",
+    "platformRegions": {},
+    "lastSave": 1557757118015
+  },
+  "VCS_STATE": {
+    "provider": "GitHub",
+    "repo": {
+      "name": "websiteSMS",
+      "url": "https://github.com/anderscook/websiteSMS"
+    }
+  }
+}
